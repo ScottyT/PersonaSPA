@@ -1,7 +1,6 @@
 import React , { Component } from 'react';
+import axios from 'axios';
 import "../index.css";
-
-const API = "http://persona5api.azurewebsites.net/api/personas";
 
 class Persona extends Component {
     constructor(props){
@@ -14,20 +13,15 @@ class Persona extends Component {
     }
 
     componentDidMount() {
-        fetch(API)
-        .then(response => response.json())
-        .then((data) => {
-            this.setState({
+        axios.get("http://persona5api.azurewebsites.net/api/personas")
+            .then(result => this.setState({
                 isLoaded: true,
-                personas: data
-            });
-        },
-        (error) => {
-            this.setState({
-                isLoaded: true,
-                error
-            });
-        })
+                personas: result.data
+            }))
+            .catch(error => this.setState({
+                error,
+                isLoaded: true
+            }));
     }
 
     render() {
@@ -41,7 +35,12 @@ class Persona extends Component {
                 <ul>
                     {personas.map(persona => (
                         <li key={persona.id}>
-                            {persona.name}
+                        <ul className="persona-details">
+                            <li>Name: {persona.name}</li>
+                            <li>Level: {persona.level}</li>
+                            <li>Arcana: {persona.arcana}</li>
+                            <li>Description: {persona.description}</li>
+                        </ul>
                         </li>
                     ))}
                 </ul>
